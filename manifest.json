@@ -1,0 +1,10 @@
+{
+	"id": "todo-sort",
+	"name": "Todo sort",
+	"version": "1.0.0",
+	"minAppVersion": "0.15.0",
+	"description": "A plugin for Obsidian (https://obsidian.md) that sorts todos by completion status.",
+	"author": "Ryan Gomba",
+	"authorUrl": "https://github.com/ryangomba",
+	"isDesktopOnly": false
+}
