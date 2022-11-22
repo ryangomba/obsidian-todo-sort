@@ -1,73 +1,73 @@
 import { sortTodos } from "./sort";
 
 test("sort incomplete", () => {
-	const input = `
+  const input = `
 - [ ] a
 - [ ] b
 - [ ] c
 `;
-	const expectedOutput = `
+  const expectedOutput = `
 - [ ] a
 - [ ] b
 - [ ] c
 `;
-	const result = sortTodos(input);
-	expect(result.output).toBe(expectedOutput);
-	expect(result.lineMap).toStrictEqual({
-		0: 0,
-		1: 1,
-		2: 2,
-		3: 3,
-		4: 4,
-	});
+  const result = sortTodos(input);
+  expect(result.output).toBe(expectedOutput);
+  expect(result.lineMap).toStrictEqual({
+    0: 0,
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+  });
 });
 
 test("sort mixed, already sorted", () => {
-	const input = `
+  const input = `
 - [x] a
 - [ ] b
 - [ ] c
 `;
-	const expectedOutput = `
+  const expectedOutput = `
 - [x] a
 - [ ] b
 - [ ] c
 `;
-	const result = sortTodos(input);
-	expect(result.output).toBe(expectedOutput);
-	expect(result.lineMap).toStrictEqual({
-		0: 0,
-		1: 1,
-		2: 2,
-		3: 3,
-		4: 4,
-	});
+  const result = sortTodos(input);
+  expect(result.output).toBe(expectedOutput);
+  expect(result.lineMap).toStrictEqual({
+    0: 0,
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+  });
 });
 
 test("sort mixed, not sorted", () => {
-	const input = `
+  const input = `
 - [ ] a
 - [ ] b
 - [x] c
 `;
-	const expectedOutput = `
+  const expectedOutput = `
 - [x] c
 - [ ] a
 - [ ] b
 `;
-	const result = sortTodos(input);
-	expect(result.output).toBe(expectedOutput);
-	expect(result.lineMap).toStrictEqual({
-		0: 0,
-		1: 2,
-		2: 3,
-		3: 1,
-		4: 4,
-	});
+  const result = sortTodos(input);
+  expect(result.output).toBe(expectedOutput);
+  expect(result.lineMap).toStrictEqual({
+    0: 0,
+    1: 2,
+    2: 3,
+    3: 1,
+    4: 4,
+  });
 });
 
 test("sort double list, not sorted", () => {
-	const input = `
+  const input = `
 - [ ] a
 - [ ] b
 - [x] c
@@ -76,7 +76,7 @@ Hi
 \t- [x] e
 \t- [ ] f
 `;
-	const expectedOutput = `
+  const expectedOutput = `
 - [x] c
 - [ ] a
 - [ ] b
@@ -85,23 +85,23 @@ Hi
 \t- [ ] d
 \t- [ ] f
 `;
-	const result = sortTodos(input);
-	expect(result.output).toBe(expectedOutput);
-	expect(result.lineMap).toStrictEqual({
-		0: 0,
-		1: 2,
-		2: 3,
-		3: 1,
-		4: 4,
-		5: 6,
-		6: 5,
-		7: 7,
-		8: 8,
-	});
+  const result = sortTodos(input);
+  expect(result.output).toBe(expectedOutput);
+  expect(result.lineMap).toStrictEqual({
+    0: 0,
+    1: 2,
+    2: 3,
+    3: 1,
+    4: 4,
+    5: 6,
+    6: 5,
+    7: 7,
+    8: 8,
+  });
 });
 
-test("sort very nested", () => {
-	const input = `
+test("sort very nested (tabs)", () => {
+  const input = `
 - Today
 \t- [ ] a
 \t- [ ] b
@@ -115,7 +115,7 @@ test("sort very nested", () => {
 \t- [x] e
 \t- [ ] f
 `;
-	const expectedOutput = `
+  const expectedOutput = `
 - Today
 \t- [x] c
 \t\t- And so is this
@@ -129,22 +129,71 @@ test("sort very nested", () => {
 \t\t- [ ] d1
 \t- [ ] f
 `;
-	const result = sortTodos(input);
-	expect(result.output).toBe(expectedOutput);
-	expect(result.lineMap).toStrictEqual({
-		0: 0,
-		1: 1,
-		2: 4,
-		3: 5,
-		4: 6,
-		5: 2,
-		6: 3,
-		7: 7,
-		8: 9,
-		9: 11,
-		10: 10,
-		11: 8,
-		12: 12,
-		13: 13,
-	});
+  const result = sortTodos(input);
+  expect(result.output).toBe(expectedOutput);
+  expect(result.lineMap).toStrictEqual({
+    0: 0,
+    1: 1,
+    2: 4,
+    3: 5,
+    4: 6,
+    5: 2,
+    6: 3,
+    7: 7,
+    8: 9,
+    9: 11,
+    10: 10,
+    11: 8,
+    12: 12,
+    13: 13,
+  });
+});
+
+test("sort very nested (variable spaces)", () => {
+  const input = `
+- Today
+  - [ ] a
+  - [ ] b
+   - This is a child note
+  - [x] c
+    - And so is this
+- Tomorrow
+  - [ ] d
+            - [ ] d1
+            - [x] d2
+  - [x] e
+  - [ ] f
+`;
+  const expectedOutput = `
+- Today
+  - [x] c
+    - And so is this
+  - [ ] a
+  - [ ] b
+   - This is a child note
+- Tomorrow
+  - [x] e
+  - [ ] d
+            - [x] d2
+            - [ ] d1
+  - [ ] f
+`;
+  const result = sortTodos(input);
+  expect(result.output).toBe(expectedOutput);
+  expect(result.lineMap).toStrictEqual({
+    0: 0,
+    1: 1,
+    2: 4,
+    3: 5,
+    4: 6,
+    5: 2,
+    6: 3,
+    7: 7,
+    8: 9,
+    9: 11,
+    10: 10,
+    11: 8,
+    12: 12,
+    13: 13,
+  });
 });
