@@ -1,8 +1,13 @@
 import { Editor, MarkdownView, Plugin } from "obsidian";
+import { DEFAULT_SETTINGS, Settings, SettingsTab } from "./settings";
 import { sortTodos } from "./sort";
 
 export default class MyPlugin extends Plugin {
+  settings: Settings;
+
   async onload() {
+    await this.loadSettings();
+    this.addSettingTab(new SettingsTab(this.app, this));
     this.registerEvent(
       this.app.workspace.on("editor-change", this._onEditorChange)
     );
@@ -10,13 +15,25 @@ export default class MyPlugin extends Plugin {
 
   onunload() {}
 
-  _onEditorChange = (editor: Editor, markdownView: MarkdownView) => {
-    this._sortTodos(editor);
+  async loadSettings() {
+    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+  }
+
+  async saveSettings() {
+    await this.saveData(this.settings);
+  }
+
+  _onEditorChange = async (editor: Editor, _markdownView: MarkdownView) => {
+    // Settings can change while the editor is open, so we need to reload them.
+    await this.loadSettings();
+    setTimeout(() => {
+      this._sortTodos(editor);
+    }, this.settings.delayMS);
   };
 
   _lastSort = new Date();
   _lastValue = "";
-  _sortTodos = (editor: Editor) => {
+  _sortTodos = async (editor: Editor) => {
     const began = new Date();
     const value = editor.getValue();
     if (value === this._lastValue) {
@@ -28,7 +45,7 @@ export default class MyPlugin extends Plugin {
     }
     const cursor = editor.getCursor();
     const lineNumber = cursor.line;
-    const result = sortTodos(value);
+    const result = sortTodos(value, this.settings.sortOrder);
     if (result.output !== value) {
       const now = new Date();
       console.log(`Sorted todos in ${now.getTime() - began.getTime()}ms`);

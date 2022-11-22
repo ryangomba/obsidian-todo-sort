@@ -1,4 +1,4 @@
-import { sortTodos } from "./sort";
+import { SortOrder, sortTodos } from "./sort";
 
 test("sort incomplete", () => {
   const input = `
@@ -11,7 +11,7 @@ test("sort incomplete", () => {
 - [ ] b
 - [ ] c
 `;
-  const result = sortTodos(input);
+  const result = sortTodos(input, SortOrder.COMPLETED_TOP);
   expect(result.output).toBe(expectedOutput);
   expect(result.lineMap).toStrictEqual({
     0: 0,
@@ -33,7 +33,7 @@ test("sort mixed, already sorted", () => {
 - [ ] b
 - [ ] c
 `;
-  const result = sortTodos(input);
+  const result = sortTodos(input, SortOrder.COMPLETED_TOP);
   expect(result.output).toBe(expectedOutput);
   expect(result.lineMap).toStrictEqual({
     0: 0,
@@ -47,21 +47,43 @@ test("sort mixed, already sorted", () => {
 test("sort mixed, not sorted", () => {
   const input = `
 - [ ] a
-- [ ] b
-- [x] c
+- [x] b
+- [ ] c
 `;
   const expectedOutput = `
-- [x] c
+- [x] b
 - [ ] a
-- [ ] b
+- [ ] c
 `;
-  const result = sortTodos(input);
+  const result = sortTodos(input, SortOrder.COMPLETED_TOP);
   expect(result.output).toBe(expectedOutput);
   expect(result.lineMap).toStrictEqual({
     0: 0,
     1: 2,
+    2: 1,
+    3: 3,
+    4: 4,
+  });
+});
+
+test("sort mixed, not sorted, completed at bottom", () => {
+  const input = `
+- [ ] a
+- [x] b
+- [ ] c
+`;
+  const expectedOutput = `
+- [ ] a
+- [ ] c
+- [x] b
+`;
+  const result = sortTodos(input, SortOrder.COMPLETED_BOTTOM);
+  expect(result.output).toBe(expectedOutput);
+  expect(result.lineMap).toStrictEqual({
+    0: 0,
+    1: 1,
     2: 3,
-    3: 1,
+    3: 2,
     4: 4,
   });
 });
@@ -85,7 +107,7 @@ Hi
 \t- [ ] d
 \t- [ ] f
 `;
-  const result = sortTodos(input);
+  const result = sortTodos(input, SortOrder.COMPLETED_TOP);
   expect(result.output).toBe(expectedOutput);
   expect(result.lineMap).toStrictEqual({
     0: 0,
@@ -129,7 +151,7 @@ test("sort very nested (tabs)", () => {
 \t\t- [ ] d1
 \t- [ ] f
 `;
-  const result = sortTodos(input);
+  const result = sortTodos(input, SortOrder.COMPLETED_TOP);
   expect(result.output).toBe(expectedOutput);
   expect(result.lineMap).toStrictEqual({
     0: 0,
@@ -152,33 +174,33 @@ test("sort very nested (tabs)", () => {
 test("sort very nested (variable spaces)", () => {
   const input = `
 - Today
-  - [ ] a
-  - [ ] b
-   - This is a child note
-  - [x] c
-    - And so is this
+	- [ ] a
+	- [ ] b
+	 - This is a child note
+	- [x] c
+		- And so is this
 - Tomorrow
-  - [ ] d
-            - [ ] d1
-            - [x] d2
-  - [x] e
-  - [ ] f
+	- [ ] d
+						- [ ] d1
+						- [x] d2
+	- [x] e
+	- [ ] f
 `;
   const expectedOutput = `
 - Today
-  - [x] c
-    - And so is this
-  - [ ] a
-  - [ ] b
-   - This is a child note
+	- [x] c
+		- And so is this
+	- [ ] a
+	- [ ] b
+	 - This is a child note
 - Tomorrow
-  - [x] e
-  - [ ] d
-            - [x] d2
-            - [ ] d1
-  - [ ] f
+	- [x] e
+	- [ ] d
+						- [x] d2
+						- [ ] d1
+	- [ ] f
 `;
-  const result = sortTodos(input);
+  const result = sortTodos(input, SortOrder.COMPLETED_TOP);
   expect(result.output).toBe(expectedOutput);
   expect(result.lineMap).toStrictEqual({
     0: 0,

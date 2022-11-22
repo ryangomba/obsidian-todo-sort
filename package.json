@@ -2,10 +2,10 @@
   "name": "todo-sort",
   "version": "1.0.0",
   "description": "A plugin for Obsidian (https://obsidian.md) that sorts todos by completion status.",
-  "main": "dist/main.js",
+  "main": "main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs",
-    "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production && cp manifest.json ./dist && cp manifest.json ./dist",
+    "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
     "test": "jest",
     "version": "node version-bump.mjs && git add manifest.json versions.json"
   },
