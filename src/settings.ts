@@ -4,12 +4,10 @@ import { SortOrder } from "./sort";
 
 export interface Settings {
   sortOrder: SortOrder;
-  delayMS: number;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
   sortOrder: SortOrder.COMPLETED_TOP,
-  delayMS: 0,
 };
 
 export class SettingsTab extends PluginSettingTab {
@@ -34,19 +32,5 @@ export class SettingsTab extends PluginSettingTab {
           await this.plugin.saveSettings();
         })
     );
-    new Setting(containerEl)
-      .setName("Delay")
-      .setDesc("How long to wait after a change until sorting todos?")
-      .addDropdown((dropdown) =>
-        dropdown
-          .addOption("0", "No delay")
-          .addOption("125", "125ms")
-          .addOption("250", "250ms")
-          .setValue(this.plugin.settings.delayMS.toString())
-          .onChange(async (val) => {
-            this.plugin.settings.delayMS = parseInt(val, 10);
-            await this.plugin.saveSettings();
-          })
-      );
   }
 }

@@ -23,12 +23,8 @@ export default class MyPlugin extends Plugin {
     await this.saveData(this.settings);
   }
 
-  _onEditorChange = async (editor: Editor, _markdownView: MarkdownView) => {
-    // Settings can change while the editor is open, so we need to reload them.
-    await this.loadSettings();
-    setTimeout(() => {
-      this._sortTodos(editor);
-    }, this.settings.delayMS);
+  _onEditorChange = (editor: Editor, _markdownView: MarkdownView) => {
+    this._sortTodos(editor);
   };
 
   _lastSort = new Date();
@@ -43,6 +39,8 @@ export default class MyPlugin extends Plugin {
       console.error("WARNING!!! Possible infinite sort detected");
       return;
     }
+    // Settings can change while the editor is open, so we need to reload them.
+    await this.loadSettings();
     const cursor = editor.getCursor();
     const lineNumber = cursor.line;
     const result = sortTodos(value, this.settings.sortOrder);
