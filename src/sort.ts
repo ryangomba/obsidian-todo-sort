@@ -21,8 +21,9 @@ type SortResult = {
 export function sortTodos(plainText: string, sortOrder: SortOrder): SortResult {
   const lines = plainText.split("\n");
   const lineInfos = lines.map((value, originalIndex) => {
-    const todo = value.indexOf("- [") >= 0;
-    const completed = value.indexOf("- [x]") >= 0;
+    let todoMatch = value.match(/^\s*- \[(.)\]/i);
+    const todo = !!todoMatch;
+    const completed = !!todoMatch && todoMatch[1] != " ";
     const indentation = value.length - value.trimStart().length;
     return { originalIndex, value, todo, completed, indentation };
   });

@@ -66,6 +66,28 @@ test("sort mixed, not sorted", () => {
   });
 });
 
+test("sort todos with different inner chars",  () => {
+  const input = `
+- [ ] a
+- [-] b
+- [!] c
+`;
+  const expectedOutput = `
+- [-] b
+- [!] c
+- [ ] a
+`;
+  const result = sortTodos(input, SortOrder.COMPLETED_TOP);
+  expect(result.output).toBe(expectedOutput);
+  expect(result.lineMap).toStrictEqual({
+    0: 0,
+    1: 3,
+    2: 1,
+    3: 2,
+    4: 4,
+  });
+});
+
 test("sort mixed, not sorted, completed at bottom", () => {
   const input = `
 - [ ] a
@@ -217,5 +239,22 @@ test("sort very nested (variable spaces)", () => {
     11: 8,
     12: 12,
     13: 13,
+  });
+});
+
+test("sort non-todos that look like todos", () => {
+  const input = `
+Not a todo: - [ ] a
+-- [ ] b
+or this - [x] c
+`;
+  const result = sortTodos(input, SortOrder.COMPLETED_TOP);
+  expect(result.output).toBe(input);
+  expect(result.lineMap).toStrictEqual({
+    0: 0,
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
   });
 });
