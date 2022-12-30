@@ -52,12 +52,10 @@ export default class MyPlugin extends Plugin {
       this._lastValue = result.output;
       editor.setValue(result.output);
       const newLine = result.lineMap[lineNumber];
-      if (newLine != cursor.line) {
-        editor.setCursor({
-          line: newLine,
-          ch: cursor.ch,
-        });
-      }
+      editor.setCursor({
+        line: newLine,
+        ch: cursor.ch,
+      });
     }
   };
 
